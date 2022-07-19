@@ -21,12 +21,18 @@ Widget extraitsPage(BuildContext context) {
 List<Card> buildCarte(BuildContext context) {
   List<Card> r = [];
   for (var dataCarte in extraitsData) {
-    r.add(carte(context, dataCarte['title_court']));
+    r.add(carte(context, 
+              dataCarte['title_court'],
+              dataCarte['image']
+              ));
   }
   return r;
 }
 
-Card carte(BuildContext context, String title) {
+Card carte(BuildContext context,
+          String title, 
+          String pathToImage
+          ) {
   return Card(
     elevation: 5,
     shape: const RoundedRectangleBorder(
@@ -38,9 +44,10 @@ Card carte(BuildContext context, String title) {
       onTap: () {
         debugPrint('Card tapped.');
       },
-      child: Image(
-        image: ,
-
+      child: Row(
+        children: [
+          Image.asset('assets/$pathToImage')
+        ],
       ),
     ),
   );
