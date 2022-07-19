@@ -45,8 +45,18 @@ Card carte(BuildContext context,
         debugPrint('Card tapped.');
       },
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
         children: [
-          Image.asset('assets/$pathToImage')
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.fitWidth,
+                alignment: FractionalOffset.topCenter,
+                image: ImageProvider Image.asset('assets/$pathToImage')
+              )
+            ),
+          )
         ],
       ),
     ),
