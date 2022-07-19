@@ -35,15 +35,12 @@ Card carte(BuildContext context, String title) {
       ),
       borderRadius: const BorderRadius.all(Radius.circular(12)),
     ),
-    child: Card(
       child: InkWell(
         splashColor: Theme.of(context).colorScheme.primaryContainer,
         onTap: () {
           debugPrint('Card tapped.');
         },
-        child: ,
         ),
       ),
-    ),
   );
 }
