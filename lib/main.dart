@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'extraitsPage.dart';
+import 'extraitsChoixPage.dart';
 import 'grammairePage.dart';
 import 'oeuvrePage.dart';
 import 'examenPage.dart';

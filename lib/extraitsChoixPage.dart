@@ -28,19 +28,20 @@ List<Card> buildCarte(BuildContext context) {
 
 Card carte(BuildContext context, String title) {
   return Card(
-    elevation: 0,
-    shape: RoundedRectangleBorder(
-      side: BorderSide(
-        color: Theme.of(context).colorScheme.outline,
-      ),
-      borderRadius: const BorderRadius.all(Radius.circular(12)),
+    elevation: 5,
+    shape: const RoundedRectangleBorder(
+      side: BorderSide.none,
+      borderRadius: BorderRadius.all(Radius.circular(12)),
     ),
-      child: InkWell(
-        splashColor: Theme.of(context).colorScheme.primaryContainer,
-        onTap: () {
-          debugPrint('Card tapped.');
-        },
-        ),
+    child: InkWell(
+      splashColor: Theme.of(context).colorScheme.primaryContainer,
+      onTap: () {
+        debugPrint('Card tapped.');
+      },
+      child: Image(
+        image: ,
+
       ),
+    ),
   );
 }
