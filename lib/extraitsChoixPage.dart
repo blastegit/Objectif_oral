@@ -34,7 +34,7 @@ Card carte(BuildContext context,
           String pathToImage
           ) {
   return Card(
-    elevation: 5,
+    elevation: 1,
     shape: const RoundedRectangleBorder(
       side: BorderSide.none,
       borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -46,19 +46,8 @@ Card carte(BuildContext context,
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                fit: BoxFit.fitWidth,
-                alignment: FractionalOffset.topCenter,
-                image: ImageProvider Image.asset('assets/$pathToImage')
-              )
-            ),
-          )
-        ],
-      ),
-    ),
+        mainAxisSize: MainAxisSize.max
+      )
+    )
   );
 }

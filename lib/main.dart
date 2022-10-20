@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: const NavigationExample(),
-      theme: ThemeData(colorSchemeSeed: Colors.red, useMaterial3: true),
+      theme: ThemeData(colorSchemeSeed: Colors.black, useMaterial3: true),
     );
   }
 }
@@ -40,17 +40,8 @@ class _NavigationExampleState extends State<NavigationExample> {
         title: const Text('Bienvenue'),
         actions: <Widget>[
           IconButton(
-              icon: const Icon(Icons.settings_rounded),
-              tooltip: 'Show Snackbar',
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ParametresPage()));
-              }),
-          IconButton(
-            icon: const Icon(Icons.navigate_next),
-            tooltip: 'Go to the next page',
+            icon: const Icon(Icons.update),
+            tooltip: "Changer d'année",
             onPressed: () {
               Navigator.push(context, MaterialPageRoute<void>(
                 builder: (BuildContext context) {
@@ -69,6 +60,15 @@ class _NavigationExampleState extends State<NavigationExample> {
               ));
             },
           ),
+          IconButton(
+              icon: const Icon(Icons.settings),
+              tooltip: 'Paramètres',
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ParametresPage()));
+              }),
         ],
       ),
       bottomNavigationBar: NavigationBar(

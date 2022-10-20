@@ -5,9 +5,16 @@ class ParametresPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: const Text('Page des paramètres'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Paramètres'),
+      ),
+      body: const Center(
+        child: Text(
+          'Page des paramètres',
+          style: TextStyle(fontSize: 24),
+        ),
+      ),
     );
   }
 }
