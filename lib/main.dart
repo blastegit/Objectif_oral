@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'extraitsChoixPage.dart';
-import 'grammairePage.dart';
-import 'oeuvrePage.dart';
-import 'examenPage.dart';
-import 'ParametresPage.dart';
+import 'choix_extraits_page.dart';
+import 'grammaire_page.dart';
+import 'oeuvre_page.dart';
+import 'location_page.dart';
+import 'settings_page.dart';
 
 void main() {
   runApp(const MyApp());

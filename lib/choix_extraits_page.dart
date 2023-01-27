@@ -46,7 +46,10 @@ Card carte(BuildContext context,
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Image.asset(pathToImage)
+        ],
       )
     )
   );
