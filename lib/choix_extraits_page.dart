@@ -35,22 +35,25 @@ Card carte(BuildContext context,
           ) {
   return Card(
     elevation: 1,
-    shape: const RoundedRectangleBorder(
-      side: BorderSide.none,
-      borderRadius: BorderRadius.all(Radius.circular(12)),
-    ),
-    child: InkWell(
-      splashColor: Theme.of(context).colorScheme.primaryContainer,
-      onTap: () {
-        debugPrint('Card tapped.');
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Image.asset(pathToImage)
-        ],
-      )
+    clipBehavior: Clip.hardEdge,
+    child:
+        Stack(
+            children: [
+              InkWell(
+                splashColor: Theme.of(context).colorScheme.primaryContainer,
+                onTap: () {
+                debugPrint('Card tapped.');
+                },
+              ),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                style : const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Image.asset('assets/images/gargantua.png'),
+            ]
+        )
     )
   );
 }
