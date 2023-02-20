@@ -54,7 +54,7 @@ Map<String, dynamic> dataExtrait2 = {
   'num': 2,
   'title':
       "Gargantua de François Rabelais\nCHAPITRE 6\nDe la généalogie et des anciennes origines de Gargantua",
-  'title_court': 'Gargantua de Rabelais',
+  'title_court': 'Gargantua de Rabelais2',
   'texte':
       "     Le bonhomme Grandgousier, qui buvait et s’amusait avec les autres, entendit le cri horrible que son fils avait poussé en arrivant au jour, quand il bramait en demandant : « À boire ! à boire ! à boire ! » Alors il dit : « Quel grand tu as ! » (sous-entendu le gosier). En l’entendant, les assistants dirent que, pour cette raison, vraiment il devait porter le nom de Gargantua, puisque cela avait été la première parole de son père à sa naissance, suivant l’exemple des anciens Hébreux. Cela fut accepté par son père, et plut beaucoup à sa mère. Pour apaiser l’enfant, on lui donna à boire à tirelarigot, et il fut porté sur les fonts et baptisé, comme c’est la coutume des bons chrétiens.\n     Et on fit venir pour lui dix-sept mille neuf cents vaches de Pontille et de Bréhémont pour l’allaiter quotidiennement. Car on ne put trouver de nourrice convenable dans tout le pays, en raison de la grande quantité de lait nécessaire pour l’alimenter, bien que certains docteurs scotistes aient affirmé que sa mère l'allaita et qu'elle pouvait traire de ses mamelles quatorze cent deux feuillettes et neuf potées de lait à chaque fois, ce qui n'est pas vraisemblable, et cette proposition a été déclarée mamallement scandaleuse, blessante pour des oreilles capables de piété, et sentant de loin l'hérésie.",
   'analyse': [
@@ -72,7 +72,7 @@ Map<String, dynamic> dataExtrait2 = {
 Map<String, dynamic> dataExtrait3 = {
   'num': 3,
   'title': "",
-  'title_court': "Gargantua de Rabelais",
+  'title_court': "Gargantua de Rabelais3",
   'texte': "",
   'analyse': [],
   'image': 'assets/images/gargantua.jpg'
@@ -112,7 +112,7 @@ Map<String, dynamic> dataExtrait6 = {
 Map<String, dynamic> dataExtrait7 = {
   'num': 7,
   'title': "",
-  'title_court': "Juste la fin du monde de Lagarce",
+  'title_court': "Juste la fin du monde de Lagarce2",
   'texte': "",
   'analyse': [],
   'image': 'assets/images/gargantua.jpg'
@@ -122,7 +122,7 @@ Map<String, dynamic> dataExtrait7 = {
 Map<String, dynamic> dataExtrait8 = {
   'num': 8,
   'title': "",
-  'title_court': "Juste la fin du monde de Lagarce",
+  'title_court': "Juste la fin du monde de Lagarce3",
   'texte': "",
   'analyse': [],
   'image': 'assets/images/gargantua.jpg'
@@ -212,7 +212,7 @@ Map<String, dynamic> dataExtrait16 = {
 Map<String, dynamic> dataExtrait17 = {
   'num': 17,
   'title': "",
-  'title_court': "Mémoires d'Hadrien de Yourcenar",
+  'title_court': "Mémoires d'Hadrien de Yourcenar2",
   'texte': "",
   'analyse': [],
   'image': 'assets/images/gargantua.jpg'
@@ -222,7 +222,7 @@ Map<String, dynamic> dataExtrait17 = {
 Map<String, dynamic> dataExtrait18 = {
   'num': 18,
   'title': "",
-  'title_court': "Mémoires d'Hadrien de Yourcenar",
+  'title_court': "Mémoires d'Hadrien de Yourcenar3",
   'texte': "",
   'analyse': [],
   'image': 'assets/images/gargantua.jpg'
