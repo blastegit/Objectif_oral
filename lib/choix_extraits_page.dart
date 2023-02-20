@@ -45,15 +45,35 @@ Card carte(BuildContext context,
                 debugPrint('Card tapped.');
                 },
               ),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                style : const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Image.asset('assets/images/gargantua.png'),
+              Column(
+                children: [
+                  Expanded(
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15.0),
+                          child: Hero(
+                            tag: title,
+                            child: Image.asset(
+                              pathToImage,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                      )
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.visible,
+                        style : const TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                        )
+                    ),
+                  ),
+                ],
+              )
             ]
         )
-    )
-  );
+    );
 }
