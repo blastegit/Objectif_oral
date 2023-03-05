@@ -39,9 +39,9 @@ Exemple :
 ```
 Sera rendu :
 
-<u>**Gargantua de François Rabelais,**</u>
-CHAPITRE 1 (INCIPIT),
-***De la généalogie et des anciennes origines de Gargantua***
+<u>**Gargantua de François Rabelais,**</u></br>
+CHAPITRE 1 (INCIPIT),</br>
+***De la généalogie et des anciennes origines de Gargantua***</br>
 
 ### Concernant les images: 
 Les images sont inclus directement dans le fichier json encodée sous le format `base64`. Pour encoder facilement une image dans ce format, un simple code python suffit:
