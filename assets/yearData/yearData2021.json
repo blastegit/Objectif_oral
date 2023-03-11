@@ -1,0 +1,16 @@
+{ "year" : 2021,
+  "jsonStorageVersion" : "1.0",
+  "extraits":  [
+    {
+      "id": "2021.GdR",
+      "full_title": "Gargantua de François Rabelais, CHAPITRE 1 (INCIPIT), De la généalogie et des anciennes origines de Gargantua",
+      "short_title": "Gargantua de Rabelais",
+      "body_text": "Je vous renvoie à la grande chronique pantagruéline pour retrouver la généalogie et l’ancien temps dont nous est venu Gargantua. Vous y apprendrez plus longuement comment les géants naquirent en ce monde et comment, en ligne directe, en est descendu Gargantua, père de Pantagruel ; vous ne vous fâcherez pas si, pour l’heure, je m’en abstiens ; et pourtant la chose est si belle que, plus on la répéterait, plus elle plairait à vos Seigneuries : vous avez la caution de Flaccus, qui déclare que certains propos tels que ceux-ci sont d’autant plus délectables qu’on les redit plus souvent.\\n     Plût à Dieu que tout le monde connût aussi certainement sa généalogie depuis l’arche de Noé jusqu’à notre époque ! Je crois qu’il y a aujourd’hui beaucoup d’empereurs, de rois, de ducs, de princes et de papes ici-bas, qui descendent de quelques porteurs de reliquailles et de hottes, et qu’à l\\'inverse nombreux sont les gueux de l’hospice, souffreteux et misérables, qui descendent du sang et de la lignée de grands rois et empereurs [...].",
+      "analyse" : "analyse...",
+      "image_key" : "gargantua_img"
+    }
+  ],
+  "images64" : {
+    "gargantua_img" : "image codée en base 64"
+  }
+}

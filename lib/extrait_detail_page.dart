@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:objectif_oral/data_reader.dart';
 
-Widget extraitDetailPage(BuildContext context, Map data) {
+Widget extraitDetailPage(BuildContext context, ExtraitData data) {
+  return Scaffold(
+      appBar: AppBar(
+        title: Text(data.shortTitle),
+      ),
+      body: SingleChildScrollView(
+        child: modeSimple(context, data),
+      ));
+}
+
+/* anc extrait detail page
   String analyseTexte = "";
   for (String t in data["analyse"]) {
     analyseTexte = analyseTexte + t;
@@ -12,7 +23,7 @@ Widget extraitDetailPage(BuildContext context, Map data) {
   TextStyle textFormatNormal = const TextStyle(
     fontSize: 20,
   );
-  //MediaQuery.of(context).size TODO:changer affichage selon taille et orientation
+  //MediaQuery.of(context).size
   return Scaffold(
       appBar: AppBar(
         title: Text(data["title_court"]),
@@ -22,19 +33,22 @@ Widget extraitDetailPage(BuildContext context, Map data) {
             context, data, analyseTexte, textFormatTitle, textFormatNormal),
       ));
 }
-
-/*
-OrientationBuilder(
-builder: (context, orientation) {
 */
-Widget modePortrait(BuildContext context, Map data, String analyseTexte,
-    TextStyle textFormatTitle, TextStyle textFormatNormal) {
+
+Widget modeSimple(BuildContext context, ExtraitData data) {
+  TextStyle textFormatTitle = const TextStyle(//TODO: remplacer ça
+    fontSize: 25,
+    fontWeight: FontWeight.bold,
+  );
+  TextStyle textFormatNormal = const TextStyle(
+    fontSize: 20,
+  );
   return Column(
     children: [
       Hero(
-        tag: data["title_court"],
+        tag: data.id,
         child: Image.asset(
-          data["image"],
+          "assets/images/gargantua.png",
           fit: BoxFit.cover,
         ),
       ),
@@ -43,12 +57,12 @@ Widget modePortrait(BuildContext context, Map data, String analyseTexte,
           child: Column(
             children: [
               Text(
-                data["title"],
+                data.fullTitle,
                 style: textFormatTitle,
                 textAlign: TextAlign.start,
               ),
               Text(
-                data["texte"],
+                data.bodyText,
                 style: textFormatNormal,
                 textAlign: TextAlign.justify,
               ),
@@ -58,7 +72,7 @@ Widget modePortrait(BuildContext context, Map data, String analyseTexte,
                 textAlign: TextAlign.start,
               ),
               Text(
-                analyseTexte,
+                data.analyse,
                 style: textFormatNormal,
                 textAlign: TextAlign.justify,
               ),

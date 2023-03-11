@@ -1,34 +1,28 @@
 import 'package:flutter/material.dart';
-import 'data_extraits.dart';
+import 'data_reader.dart';
 import 'extrait_detail_page.dart';
 
-Widget extraitsPage(BuildContext context) {
+Widget extraitsPage(BuildContext context, Map<String, dynamic> jsonData) {
   return GridView.count(
       primary: false,
       padding: const EdgeInsets.all(20),
       crossAxisSpacing: 10,
       mainAxisSpacing: 10,
       crossAxisCount: 2,
-      children: buildCarte(context));
+      children: buildCarte(context, jsonData));
 }
 
-List<Card> buildCarte(BuildContext context) {
+List<Card> buildCarte(BuildContext context, Map<String, dynamic> jsonData) {
   List<Card> r = [];
-  for (var dataCarte in extraitsData) {
+  for (ExtraitData extraitData in getAllExtraits(jsonData)) {
     r.add(carte(context,
-              dataCarte,
-              dataCarte['title_court'],
-              dataCarte['image']
-              ));
+        extraitData,
+    ));
   }
   return r;
 }
 
-Card carte(BuildContext context,
-          Map data,
-          String title, 
-          String pathToImage
-          ) {
+Card carte(BuildContext context, ExtraitData data) {
   return Card(
     elevation: 1,
     clipBehavior: Clip.hardEdge,
@@ -39,11 +33,11 @@ Card carte(BuildContext context,
                 children: [
                   Expanded(
                     child: Hero(
-                      tag: title,
+                      tag: data.id,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15.0),
                         child : Image.asset(
-                          pathToImage,
+                          "assets/images/gargantua.png",
                           fit: BoxFit.cover,
                         ),
                       )
@@ -52,7 +46,7 @@ Card carte(BuildContext context,
                   Container(
                     alignment: Alignment.center,
                     child: Text(
-                        title,
+                        data.shortTitle,
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.visible,
                         style : const TextStyle(
