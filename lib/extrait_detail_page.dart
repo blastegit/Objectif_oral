@@ -56,26 +56,10 @@ Widget modeSimple(BuildContext context, ExtraitData data) {
           margin: const EdgeInsets.all(20),
           child: Column(
             children: [
-              Text(
-                data.fullTitle,
-                style: textFormatTitle,
-                textAlign: TextAlign.start,
-              ),
-              Text(
-                data.bodyText,
-                style: textFormatNormal,
-                textAlign: TextAlign.justify,
-              ),
-              Text(
-                "Analyse :",
-                style: textFormatTitle,
-                textAlign: TextAlign.start,
-              ),
-              Text(
-                data.analyse,
-                style: textFormatNormal,
-                textAlign: TextAlign.justify,
-              ),
+              data.widgetTextCreator(context, "${data.fullTitle} | "),
+              data.widgetTextCreator(context, "${data.bodyText} | "),
+              data.widgetTextCreator(context, "##Analyse :## | "),
+              data.widgetTextCreator(context, data.analyse),
             ],
           )),
     ],
