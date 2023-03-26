@@ -49,10 +49,7 @@ Card carte(BuildContext context, ExtraitData data) {
                         data.shortTitle,
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.visible,
-                        style : const TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                        )
+                        style : Theme.of(context).textTheme.titleLarge
                     ),
                   ),
                 ],
