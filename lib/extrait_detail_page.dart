@@ -36,13 +36,6 @@ Widget extraitDetailPage(BuildContext context, ExtraitData data) {
 */
 
 Widget modeSimple(BuildContext context, ExtraitData data) {
-  TextStyle textFormatTitle = const TextStyle(//TODO: remplacer ça
-    fontSize: 25,
-    fontWeight: FontWeight.bold,
-  );
-  TextStyle textFormatNormal = const TextStyle(
-    fontSize: 20,
-  );
   return Column(
     children: [
       Hero(
@@ -62,6 +55,42 @@ Widget modeSimple(BuildContext context, ExtraitData data) {
               data.widgetTextCreator(context, data.analyse),
             ],
           )),
+    ],
+  );
+}
+//TODO: BUG le texte ne se justifie pas et agrandit la colonne
+Widget modeDouble(BuildContext context, ExtraitData data) {
+  return Row(
+    children: [
+      Column(
+        children: [
+          Hero(
+            tag: data.id,
+            child: Image.asset(
+              "assets/images/gargantua.png",
+              fit: BoxFit.cover,
+            ),
+          ),
+          Container(
+              margin: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  data.widgetTextCreator(context, "${data.fullTitle} | "),
+                  data.widgetTextCreator(context, "${data.bodyText} | "),
+                ],
+              )),
+        ],
+      ),
+      const Divider(),
+      Container(
+          margin: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              data.widgetTextCreator(context, "##Analyse :## | "),
+              data.widgetTextCreator(context, data.analyse),
+            ],
+          )
+      )
     ],
   );
 }
