@@ -7,6 +7,8 @@ import 'location_page.dart';
 import 'settings_page.dart';
 import 'data_reader.dart';
 
+const tailleLimiteRail = 640;
+
 void main() {
   runApp(const MyApp());
 }
@@ -42,84 +44,127 @@ class _NavigationExampleState extends State<NavigationExample> {
           if (snapshot.hasData) {
             Map<String, dynamic> extraitsInfoData =
                 getJsonDataFromText(snapshot.data);
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Bienvenue'),
-                actions: <Widget>[
-                  IconButton(
-                    icon: const Icon(Icons.update),
-                    tooltip: "Changer d'année",
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute<void>(
-                        builder: (BuildContext context) {
-                          return Scaffold(
-                            appBar: AppBar(
-                              title: const Text('Next page'),
-                            ),
-                            body: const Center(
-                              child: Text(
-                                'This is the next page',
-                                style: TextStyle(fontSize: 24),
-                              ),
-                            ),
-                          );
-                        },
-                      ));
-                    },
-                  ),
-                  IconButton(
-                      icon: const Icon(Icons.settings),
-                      tooltip: 'Paramètres',
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ParametresPage()));
-                      }),
-                ],
-              ),
-              bottomNavigationBar: NavigationBar(
-                onDestinationSelected: (int index) {
-                  setState(() {
-                    currentPageIndex = index;
-                  });
-                },
-                selectedIndex: currentPageIndex,
-                destinations: const <Widget>[
-                  NavigationDestination(
-                    icon: Icon(Icons.library_books_rounded),
-                    label: 'extraits',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.text_format_rounded),
-                    label: 'grammaire',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.menu_book_rounded),
-                    label: 'œuvre',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.place_rounded),
-                    label: 'examen',
-                  )
-                ],
-              ),
-              body: <Widget>[
-                extraitsPage(context, extraitsInfoData),
-                grammairePage(context),
-                oeuvrePage(context),
-                examenPage(context)
-              ][currentPageIndex],
-            );
+            return createApp(context, extraitsInfoData);
           } else if (snapshot.hasError) {
             // Affichage d'un message d'erreur
             return Center(
-              child: Text("Une erreur s'est produite lors du chargement des données. ${snapshot.error}"),
+              child: Text(
+                  "Une erreur s'est produite lors du chargement des données. ${snapshot.error}"),
             );
           } else {
             return const Center(
                 child: CircularProgressIndicator()); //Chargement
           }
         });
+  }
+
+  //TODO: Style erreur de fond
+  Widget createApp(
+      BuildContext context, Map<String, dynamic> extraitsInfoData) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Bienvenue'),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.update),
+              tooltip: "Changer d'année",
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute<void>(
+                  builder: (BuildContext context) {
+                    return Scaffold(
+                      appBar: AppBar(
+                        title: const Text('Next page'),
+                      ),
+                      body: const Center(
+                        child: Text(
+                          'This is the next page',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
+                    );
+                  },
+                ));
+              },
+            ),
+            IconButton(
+                icon: const Icon(Icons.settings),
+                tooltip: 'Paramètres',
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ParametresPage()));
+                }),
+          ],
+        ),
+        bottomNavigationBar:
+            MediaQuery.of(context).size.width < tailleLimiteRail
+                ? NavigationBar(
+                    onDestinationSelected: (int index) {
+                      setState(() {
+                        currentPageIndex = index;
+                      });
+                    },
+                    selectedIndex: currentPageIndex,
+                    labelBehavior:
+                        NavigationDestinationLabelBehavior.onlyShowSelected,
+                    destinations: const <NavigationDestination>[
+                      NavigationDestination(
+                        icon: Icon(Icons.library_books_rounded),
+                        label: 'extraits',
+                      ),
+                      NavigationDestination(
+                        icon: Icon(Icons.text_format_rounded),
+                        label: 'grammaire',
+                      ),
+                      NavigationDestination(
+                        icon: Icon(Icons.menu_book_rounded),
+                        label: 'œuvre',
+                      ),
+                      NavigationDestination(
+                        icon: Icon(Icons.place_rounded),
+                        label: 'examen',
+                      )
+                    ],
+                  )
+                : null,
+        body: Row(children: [
+          if (MediaQuery.of(context).size.width >= tailleLimiteRail)
+            NavigationRail(
+                labelType: NavigationRailLabelType.selected,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                destinations: const <NavigationRailDestination>[
+                  NavigationRailDestination(
+                    icon: Icon(Icons.library_books_rounded),
+                    label: Text('extraits'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.text_format_rounded),
+                    label: Text('grammaire'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.menu_book_rounded),
+                    label: Text('œuvre'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.place_rounded),
+                    label: Text('examen'),
+                  ),
+                ],
+                selectedIndex: currentPageIndex,
+                onDestinationSelected: (index) {
+                  setState(() {
+                    currentPageIndex = index;
+                  });
+                }),
+          Expanded(
+            child: <Widget>[
+              extraitsPage(context, extraitsInfoData),
+              grammairePage(context),
+              oeuvrePage(context),
+              examenPage(context)
+            ][currentPageIndex],
+          ),
+        ]));
   }
 }

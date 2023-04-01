@@ -7,33 +7,10 @@ Widget extraitDetailPage(BuildContext context, ExtraitData data) {
         title: Text(data.shortTitle),
       ),
       body: SingleChildScrollView(
-        child: modeSimple(context, data),
-      ));
+          child: MediaQuery.of(context).size.width < 640
+              ? modeSimple(context, data)
+              : modeDouble(context, data)));
 }
-
-/* anc extrait detail page
-  String analyseTexte = "";
-  for (String t in data["analyse"]) {
-    analyseTexte = analyseTexte + t;
-  }
-  TextStyle textFormatTitle = const TextStyle(
-    fontSize: 25,
-    fontWeight: FontWeight.bold,
-  );
-  TextStyle textFormatNormal = const TextStyle(
-    fontSize: 20,
-  );
-  //MediaQuery.of(context).size
-  return Scaffold(
-      appBar: AppBar(
-        title: Text(data["title_court"]),
-      ),
-      body: SingleChildScrollView(
-        child: modePortrait(
-            context, data, analyseTexte, textFormatTitle, textFormatNormal),
-      ));
-}
-*/
 
 Widget modeSimple(BuildContext context, ExtraitData data) {
   return Column(
@@ -58,38 +35,69 @@ Widget modeSimple(BuildContext context, ExtraitData data) {
     ],
   );
 }
+
 //TODO: BUG le texte ne se justifie pas et agrandit la colonne
 Widget modeDouble(BuildContext context, ExtraitData data) {
-  return Row(
+  return Column(
     children: [
-      Column(
+      Row(
         children: [
-          Hero(
-            tag: data.id,
-            child: Image.asset(
-              "assets/images/gargantua.png",
-              fit: BoxFit.cover,
-            ),
-          ),
-          Container(
-              margin: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  data.widgetTextCreator(context, "${data.fullTitle} | "),
-                  data.widgetTextCreator(context, "${data.bodyText} | "),
-                ],
-              )),
+          Expanded(
+              flex: 5,
+              child: Container(
+                  padding: const EdgeInsets.only(
+                    right: 20,
+                    bottom: 20,
+                  ),
+                  child: Hero(
+                    tag: data.id,
+                    child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
+                        ),
+                        child: Image.asset(
+                          "assets/images/gargantua.png",
+                          fit: BoxFit.cover,
+                        )),
+                  ))),
+          Expanded(
+              flex: 5,
+              child: Container(
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    bottom: 20,
+                  ),
+                  child: data.widgetTextCreator(context, data.fullTitle))),
         ],
       ),
-      const Divider(),
-      Container(
-          margin: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              data.widgetTextCreator(context, "##Analyse :## | "),
-              data.widgetTextCreator(context, data.analyse),
-            ],
-          )
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+              flex: 5,
+              child: Container(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      data.widgetTextCreator(context, "##Texte :## | "),
+                      data.widgetTextCreator(context, data.bodyText),
+                    ],
+                  ))),
+          Expanded(
+              flex: 5,
+              child: Container(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      data.widgetTextCreator(context, "##Analyse :## | "),
+                      data.widgetTextCreator(context, data.analyse),
+                    ],
+                  ))),
+        ],
       )
     ],
   );
