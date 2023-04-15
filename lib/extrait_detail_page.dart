@@ -32,11 +32,25 @@ Widget modeSimple(BuildContext context, ExtraitData data) {
               data.widgetTextCreator(context, data.analyse),
             ],
           )),
+      OutlinedButton.icon(
+        icon: const Icon(Icons.done_rounded),
+        label: const Text("Terminé"),
+        style: ButtonStyle(
+          overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                  (Set<MaterialState> states) {
+                if (states.contains(MaterialState.focused)) {
+                  return Colors.red;
+                }
+                return null; // Defer to the widget's default.
+              }
+          ),
+        ),
+        onPressed: () { },
+      )
     ],
   );
 }
 
-//TODO: BUG le texte ne se justifie pas et agrandit la colonne
 Widget modeDouble(BuildContext context, ExtraitData data) {
   return Column(
     children: [
