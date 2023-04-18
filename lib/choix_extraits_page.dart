@@ -30,21 +30,6 @@ Widget buildAvancement(BuildContext context) {
 
 Widget buildGrid(BuildContext context, Map<String, dynamic> jsonData) {
   List<Widget> listCard = buildCarte(context, jsonData);
-  //TODO:WARNING multiplie artificiellemnt le nombre d'éléments
-  Widget carte = listCard[0];
-  listCard.clear();
-  listCard.add(buildAvancement(context));
-  listCard.add(carte);
-  listCard.add(carte);
-  listCard.add(carte);
-  listCard.add(carte);
-  listCard.add(carte);
-  listCard.add(carte);
-  listCard.add(carte);
-  listCard.add(carte);
-  listCard.add(carte);
-  listCard.add(carte);
-  listCard.add(carte);
   return Align(
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(

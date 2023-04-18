@@ -10,36 +10,36 @@ import 'data_reader.dart';
 const tailleLimiteRail = 640;
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ObjectifOralApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class ObjectifOralApp extends StatelessWidget {
+  const ObjectifOralApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const NavigationExample(),
+      home: const HomePage(),
       theme: ThemeData(colorSchemeSeed: Colors.black, useMaterial3: true),
     );
   }
 }
 
-class NavigationExample extends StatefulWidget {
-  const NavigationExample({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  State<NavigationExample> createState() => _NavigationExampleState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _NavigationExampleState extends State<NavigationExample> {
+class _HomePageState extends State<HomePage> {
   int currentPageIndex = 0;
   final bool useMaterial3 = true;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: getFileText("assets/yearData/yearData2021.json"),
+        future: getFileText("assets/yearData/yearData2223.json"),
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           if (snapshot.hasData) {
             Map<String, dynamic> extraitsInfoData =
@@ -47,10 +47,30 @@ class _NavigationExampleState extends State<NavigationExample> {
             return createApp(context, extraitsInfoData);
           } else if (snapshot.hasError) {
             // Affichage d'un message d'erreur
-            return Center(
-              child: Text(
-                  "Une erreur s'est produite lors du chargement des données. ${snapshot.error}"),
-            );
+            return Container(//TODO: Donner la possibilité changer la source de donnés depuis l'erreur
+                color: Theme.of(context).colorScheme.errorContainer,
+                child: Center(
+                    child: Column(
+                  children: [
+                    Expanded(
+                        flex: 3,
+                        child: Icon(
+                          Icons.error_outline_rounded,
+                          size: 100,
+                          color: Theme.of(context).colorScheme.error,
+                        )),
+                    Expanded(
+                        flex: 7,
+                        child: Container(
+                            margin: const EdgeInsets.all(20),
+                            child: Text(
+                              "Une erreur s'est produite lors du chargement des données :\n${snapshot.error}",
+                              style: Theme.of(context).textTheme.titleMedium,
+                              softWrap: true,
+                              textAlign: TextAlign.justify,
+                            ))),
+                  ],
+                )));
           } else {
             return const Center(
                 child: CircularProgressIndicator()); //Chargement
