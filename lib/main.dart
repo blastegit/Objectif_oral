@@ -179,7 +179,7 @@ class _HomePageState extends State<HomePage> {
                 }),
           Expanded(
             child: <Widget>[
-              extraitsPage(context, extraitsInfoData),
+              ExtraitsPage(extraitsInfoData),
               grammairePage(context),
               oeuvrePage(context),
               examenPage(context)
