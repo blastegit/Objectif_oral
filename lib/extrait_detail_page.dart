@@ -37,15 +37,14 @@ Widget modeSimple(BuildContext context, ExtraitData data) {
         label: const Text("Terminé"),
         style: ButtonStyle(
           overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                  (Set<MaterialState> states) {
-                if (states.contains(MaterialState.focused)) {
-                  return Colors.red;
-                }
-                return null; // Defer to the widget's default.
-              }
-          ),
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.focused)) {
+              return Colors.red;
+            }
+            return null; // Defer to the widget's default.
+          }),
         ),
-        onPressed: () { },
+        onPressed: () {},
       )
     ],
   );
@@ -54,38 +53,49 @@ Widget modeSimple(BuildContext context, ExtraitData data) {
 Widget modeDouble(BuildContext context, ExtraitData data) {
   return Column(
     children: [
-      Row(
-        children: [
-          Expanded(
-              flex: 5,
-              child: Container(
-                  padding: const EdgeInsets.only(
-                    right: 20,
-                    bottom: 20,
-                  ),
-                  child: Hero(
-                    tag: data.id,
-                    child: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          bottomRight: Radius.circular(20),
-                        ),
-                        child: Image.asset(
-                          "assets/images/gargantua.png",
-                          fit: BoxFit.cover,
-                        )),
-                  ))),
-          Expanded(
-              flex: 5,
-              child: Container(
-                  padding: const EdgeInsets.only(
-                    left: 20,
-                    right: 20,
-                    bottom: 20,
-                  ),
-                  child: data.widgetTextCreator(context, data.fullTitle))),
-        ],
-      ),
+      Container(
+          margin: const EdgeInsets.only(right: 20.0),
+          padding: const EdgeInsets.only(
+            right: 20,
+            bottom: 20,
+            top: 20,
+          ),
+          decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(50),
+                bottomRight: Radius.circular(50),
+              )),
+          child: Row(
+            children: [
+              Expanded(
+                  flex: 5,
+                  child: Container(
+                      padding: const EdgeInsets.only(
+                        right: 20,
+                      ),
+                      child: Hero(
+                        tag: data.id,
+                        child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(50),
+                              bottomRight: Radius.circular(50),
+                            ),
+                            child: Image.asset(
+                              "assets/images/gargantua.png",
+                              fit: BoxFit.cover,
+                            )),
+                      ))),
+              Expanded(
+                  flex: 5,
+                  child: Container(
+                      padding: const EdgeInsets.only(
+                        left: 20,
+                        right: 20,
+                      ),
+                      child: data.widgetTextCreator(context, data.fullTitle))),
+            ],
+          )),
       Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

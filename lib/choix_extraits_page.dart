@@ -24,10 +24,10 @@ class ExtraitGrid extends StatelessWidget {
         alignment: Alignment.topCenter,
         child: SingleChildScrollView(
             child: Wrap(
-              spacing: 8.0,
-              runSpacing: 8.0,
-              children: listCard,
-            )));
+          spacing: 8.0,
+          runSpacing: 8.0,
+          children: listCard,
+        )));
   }
 
   List<ExtraitCard> data2Card() {
@@ -67,50 +67,69 @@ class AvancementCard extends StatelessWidget {
   }
 }
 
-class ExtraitCard extends StatelessWidget {
-  ExtraitCard(this.data, {super.key});
-  ExtraitData data;
+class ExtraitCard extends StatefulWidget {
+  final ExtraitData data;
+  ExtraitCard(this.data);
+
+  @override
+  _ExtraitCardState createState() => _ExtraitCardState();
+}
+
+class _ExtraitCardState extends State<ExtraitCard> {
+  double _elevation = 1.0;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        width: 150,
-        height: 150,
-        child: Card(
-            elevation: 1,
-            clipBehavior: Clip.hardEdge,
-            child: Stack(children: [
-              Column(
-                children: [
-                  Expanded(
-                      child: Hero(
-                          tag: data.id,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15.0),
-                            child: Image.asset(
-                              "assets/images/gargantua.png",
-                              fit: BoxFit.cover,
-                            ),
-                          ))),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(data.shortTitle,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.visible,
-                        style: Theme.of(context).textTheme.titleLarge),
+    return MouseRegion(
+      onEnter: (_) {
+        setState(() {
+          _elevation = 8.0;
+        });
+      },
+        onExit: (_) {
+        setState(() {
+          _elevation = 1.0;
+        });
+        },
+        child: SizedBox(
+            width: 150,
+            height: 150,
+            child: Card(
+                elevation: _elevation,
+                clipBehavior: Clip.hardEdge,
+                child: Stack(children: [
+                  Column(
+                    children: [
+                      Expanded(
+                          child: Hero(
+                              tag: widget.data.id,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: Image.asset(
+                                  "assets/images/gargantua.png",
+                                  fit: BoxFit.cover,
+                                ),
+                              ))),
+                      Container(
+                        alignment: Alignment.center,
+                        child: Text(widget.data.shortTitle,
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.visible,
+                            style: Theme.of(context).textTheme.titleLarge),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              InkWell(
-                splashColor: Theme.of(context).colorScheme.primaryContainer,
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => extraitDetailPage(context, data),
-                    ),
-                  );
-                },
-              ),
-            ])));
+                  InkWell(
+                    splashColor: Theme.of(context).colorScheme.primaryContainer,
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              extraitDetailPage(context, widget.data),
+                        ),
+                      );
+                    },
+                  ),
+                ]))));
   }
 }
