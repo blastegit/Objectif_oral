@@ -65,7 +65,7 @@ class ExtraitData {
     return ExtraitData(id, fullTitle, shortTitle, bodyText, analyse, imageKey);
   }
 
-  Widget widgetTextCreator(BuildContext context, String texte) {
+  static Widget widgetTextCreator(BuildContext context, String texte) {
     //sauts de ligne
     texte = texte.replaceAll(" | ", "\n");
     //select titles and ital

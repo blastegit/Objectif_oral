@@ -1,3 +1,5 @@
+import 'dart:developer'; //TODO
+
 import 'package:flutter/material.dart';
 
 import 'choix_extraits_page.dart';
@@ -6,6 +8,10 @@ import 'oeuvre_page.dart';
 import 'location_page.dart';
 import 'settings_page.dart';
 import 'data_reader.dart';
+import 'preferences.dart';
+
+//TODO à enlever
+import "package:shared_preferences/shared_preferences.dart";
 
 const tailleLimiteRail = 640;
 
@@ -19,9 +25,122 @@ class ObjectifOralApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const HomePage(),
+      home: DataAdder(
+        child: UserData(
+          child: const AppLoader(
+            child: HomePage(),
+          ),
+        ),
+      ),
       theme: ThemeData(colorSchemeSeed: Colors.black, useMaterial3: true),
     );
+  }
+}
+
+//TODO ce code sert à ajouter un json avec des donnés en attendant qu'une interface utilisateur ne puisse le faire A SUPPRIMER
+class DataAdder extends StatelessWidget {
+  final Widget child;
+
+  const DataAdder({Key? key, required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    SharedPreferences.getInstance().then((value) {
+      log("contenue de getpreferences : $value");
+    });
+    return FutureBuilder<SharedPreferences>(
+        future: SharedPreferences
+            .getInstance(), //TODO retourne null remetrtre tout en un Future Builder
+        builder: (BuildContext context,
+            AsyncSnapshot<SharedPreferences> snapshotSharedPreferences) {
+          if (snapshotSharedPreferences.connectionState ==
+              ConnectionState.done) {
+            if (snapshotSharedPreferences.hasError) {
+              throw "erreur lors de l'ajout court circuité de donnés json, récupération des préférences erreur : ${snapshotSharedPreferences.error}";
+            } else {
+              if (snapshotSharedPreferences.data == null) {
+                throw "erreur lors de l'ajout court circuité de donnés json, SharedPreferences.getInstance() return null";
+              }
+              return FutureBuilder<String>(
+                  future: getFileText("assets/yearData/yearData2223.json"),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<String> snapshotJsonStringData) {
+                    if (snapshotJsonStringData.connectionState ==
+                        ConnectionState.done) {
+                      if (snapshotJsonStringData.hasError) {
+                        throw "erreur lors de l'ajout court circuité de donnés json, lecture du fichier json erreur : ${snapshotJsonStringData.error}";
+                      } else {
+                        if (snapshotJsonStringData.data == null) {
+                          getFileText("assets/yearData/yearData2223.json").then((value) {log("value of file is $value but returned value is null");});
+                          throw "erreur lors de l'ajout court circuité de donnés json, getFileText('path/to/file') return null";
+                        }
+                        snapshotSharedPreferences.data!.setStringList(
+                            "listExtraits", [snapshotJsonStringData.data!]);
+                        return child;
+                      }
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  });
+            }
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        });
+  }
+}
+
+class AppLoader extends StatelessWidget {
+  final Widget child;
+
+  const AppLoader({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<void>(
+            future: UserData.of(context).loadEverything(),
+            builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  return Container(
+                      //TODO: Donner la possibilité changer la source de donnés depuis l'erreur
+                      color: Theme.of(context).colorScheme.errorContainer,
+                      child: Center(
+                          child: Column(
+                        children: [
+                          Expanded(
+                              flex: 3,
+                              child: Icon(
+                                Icons.error_outline_rounded,
+                                size: 100,
+                                color: Theme.of(context).colorScheme.error,
+                              )),
+                          Expanded(
+                              flex: 7,
+                              child: Container(
+                                  margin: const EdgeInsets.all(20),
+                                  child: Text(
+                                    "Une erreur s'est produite lors du chargement des données :\n${snapshot.error}",
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                    softWrap: true,
+                                    textAlign: TextAlign.justify,
+                                  ))),
+                        ],
+                      )));
+                } else {
+                  return child;
+                }
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            });
   }
 }
 
@@ -38,49 +157,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: getFileText("assets/yearData/yearData2223.json"),
-        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-          if (snapshot.hasData) {
-            Map<String, dynamic> extraitsInfoData =
-                getJsonDataFromText(snapshot.data);
-            return createApp(context, extraitsInfoData);
-          } else if (snapshot.hasError) {
-            // Affichage d'un message d'erreur
-            return Container(//TODO: Donner la possibilité changer la source de donnés depuis l'erreur
-                color: Theme.of(context).colorScheme.errorContainer,
-                child: Center(
-                    child: Column(
-                  children: [
-                    Expanded(
-                        flex: 3,
-                        child: Icon(
-                          Icons.error_outline_rounded,
-                          size: 100,
-                          color: Theme.of(context).colorScheme.error,
-                        )),
-                    Expanded(
-                        flex: 7,
-                        child: Container(
-                            margin: const EdgeInsets.all(20),
-                            child: Text(
-                              "Une erreur s'est produite lors du chargement des données :\n${snapshot.error}",
-                              style: Theme.of(context).textTheme.titleMedium,
-                              softWrap: true,
-                              textAlign: TextAlign.justify,
-                            ))),
-                  ],
-                )));
-          } else {
-            return const Center(
-                child: CircularProgressIndicator()); //Chargement
-          }
-        });
-  }
-
-  //TODO: Style erreur de fond
-  Widget createApp(
-      BuildContext context, Map<String, dynamic> extraitsInfoData) {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Bienvenue'),
@@ -179,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                 }),
           Expanded(
             child: <Widget>[
-              ExtraitsPage(extraitsInfoData),
+              const ExtraitsChoixPage(),
               grammairePage(context),
               oeuvrePage(context),
               examenPage(context)
