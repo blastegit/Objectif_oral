@@ -24,15 +24,15 @@ class ObjectifOralApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: DataAdder(
-        child: UserData(
-          child: const AppLoader(
+    return DataAdder(
+      child: UserData(
+        child: MaterialApp(
+          home: const AppLoader(
             child: HomePage(),
           ),
+          theme: ThemeData(colorSchemeSeed: Colors.black, useMaterial3: true),
         ),
       ),
-      theme: ThemeData(colorSchemeSeed: Colors.black, useMaterial3: true),
     );
   }
 }
@@ -50,7 +50,7 @@ class DataAdder extends StatelessWidget {
     });
     return FutureBuilder<SharedPreferences>(
         future: SharedPreferences
-            .getInstance(), //TODO retourne null remetrtre tout en un Future Builder
+            .getInstance(),
         builder: (BuildContext context,
             AsyncSnapshot<SharedPreferences> snapshotSharedPreferences) {
           if (snapshotSharedPreferences.connectionState ==
@@ -71,11 +71,16 @@ class DataAdder extends StatelessWidget {
                         throw "erreur lors de l'ajout court circuité de donnés json, lecture du fichier json erreur : ${snapshotJsonStringData.error}";
                       } else {
                         if (snapshotJsonStringData.data == null) {
-                          getFileText("assets/yearData/yearData2223.json").then((value) {log("value of file is $value but returned value is null");});
+                          getFileText("assets/yearData/yearData2223.json")
+                              .then((value) {
+                            log("value of file is $value but returned value is null");
+                          });
                           throw "erreur lors de l'ajout court circuité de donnés json, getFileText('path/to/file') return null";
                         }
                         snapshotSharedPreferences.data!.setStringList(
-                            "listExtraits", [snapshotJsonStringData.data!]);
+                            UserData.listExtraits, [snapshotJsonStringData.data!]);
+                        snapshotSharedPreferences.data!.setStringList(UserData.validatedExtrait, ["ohzfh", "jzefjf", "ihzofh"]);
+                        snapshotSharedPreferences.data!.setStringList(UserData.activatedExtrait, []);
                         return child;
                       }
                     } else {
@@ -102,45 +107,44 @@ class AppLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
-            future: UserData.of(context).loadEverything(),
-            builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasError) {
-                  return Container(
-                      //TODO: Donner la possibilité changer la source de donnés depuis l'erreur
-                      color: Theme.of(context).colorScheme.errorContainer,
-                      child: Center(
-                          child: Column(
-                        children: [
-                          Expanded(
-                              flex: 3,
-                              child: Icon(
-                                Icons.error_outline_rounded,
-                                size: 100,
-                                color: Theme.of(context).colorScheme.error,
-                              )),
-                          Expanded(
-                              flex: 7,
-                              child: Container(
-                                  margin: const EdgeInsets.all(20),
-                                  child: Text(
-                                    "Une erreur s'est produite lors du chargement des données :\n${snapshot.error}",
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                    softWrap: true,
-                                    textAlign: TextAlign.justify,
-                                  ))),
-                        ],
-                      )));
-                } else {
-                  return child;
-                }
-              } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            });
+        future: UserData.of(context).loadEverything(),
+        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return Container(
+                  //TODO: Donner la possibilité changer la source de donnés depuis l'erreur
+                  color: Theme.of(context).colorScheme.errorContainer,
+                  child: Center(
+                      child: Column(
+                    children: [
+                      Expanded(
+                          flex: 3,
+                          child: Icon(
+                            Icons.error_outline_rounded,
+                            size: 100,
+                            color: Theme.of(context).colorScheme.error,
+                          )),
+                      Expanded(
+                          flex: 7,
+                          child: Container(
+                              margin: const EdgeInsets.all(20),
+                              child: Text(
+                                "Une erreur s'est produite lors du chargement des données :\n${snapshot.error}",
+                                style: Theme.of(context).textTheme.titleMedium,
+                                softWrap: true,
+                                textAlign: TextAlign.justify,
+                              ))),
+                    ],
+                  )));
+            } else {
+              return child;
+            }
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        });
   }
 }
 

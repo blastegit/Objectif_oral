@@ -97,7 +97,9 @@ class UserData extends InheritedWidget {
   }
 
   Future<int> nbrValidatedExtraits() async {
+    log("ESSAI R2CUPERATION EXTRAITS VALID2S");
     List<String> actualValidatedExtracts = await getValidatedExtrais();
+    log("EXTRAITS VALID2S R2CUP2R2S");
     return actualValidatedExtracts.length;
   }
 

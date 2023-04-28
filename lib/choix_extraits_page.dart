@@ -40,6 +40,9 @@ class AvancementCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserData.of(context).nbrValidatedExtraits().then((value) {
+      log("nbr extrait validés : $value");
+    });
     return FutureBuilder<int>(
         future: UserData.of(context).nbrValidatedExtraits(),
         builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
