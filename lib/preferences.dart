@@ -59,6 +59,7 @@ class UserData extends InheritedWidget {
   static const listExtraits = "listExtraits";
 
   final Map<String, ExtraitData> _cacheExtraits = {};
+  final List<Function> _validatedLinkedWidgetCallbacks = [];
 
   static UserData? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<UserData>();
@@ -71,7 +72,7 @@ class UserData extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(UserData oldWidget) => false; //TODO
+  bool updateShouldNotify(UserData oldWidget) => true; //TODO
 
   ////validated Extraits
   Future<List<String>> getValidatedExtrais() async {
@@ -82,6 +83,7 @@ class UserData extends InheritedWidget {
   void setValidatedExtraits(List<String> newValidatedExtracts) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setStringList(validatedExtrait, newValidatedExtracts);
+    callCallbackToAllValidatedLinkedWidget();
   }
 
   void addValidatedExtraits(String addString) async {
@@ -101,6 +103,48 @@ class UserData extends InheritedWidget {
     List<String> actualValidatedExtracts = await getValidatedExtrais();
     log("EXTRAITS VALID2S R2CUP2R2S");
     return actualValidatedExtracts.length;
+  }
+
+  Future<bool> isValidated(String extraitID) async {
+    List<String> actualValidatedExtracts = await getValidatedExtrais();
+    return actualValidatedExtracts.contains(extraitID);
+  }
+
+  static Widget ifIsValidated(
+      {required BuildContext context,
+      required String extraitID,
+      required Widget isValidated,
+      required Widget isNotValidated}) {
+    return FutureBuilder<bool>(
+        future: UserData.of(context).isValidated(extraitID),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError | (snapshot.data == null)) {
+              throw "La récupération de si l'extrait '$extraitID' a été validé a mené soit à une erreur soit à un résultat null : ${snapshot.error}";
+            } else {
+              if (snapshot.data! == true) {
+                return isValidated;
+              } else {
+                return isNotValidated;
+              }
+            }
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        });
+  }
+
+  void notifyMeIfValidatedChange(Function callback) {
+    _validatedLinkedWidgetCallbacks.add(callback);
+  }
+
+  void callCallbackToAllValidatedLinkedWidget() {
+    for (Function callback in _validatedLinkedWidgetCallbacks) {
+      _validatedLinkedWidgetCallbacks.remove(callback);
+      callback();
+    }
   }
 
   ////activated Extraits

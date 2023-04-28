@@ -79,7 +79,7 @@ class DataAdder extends StatelessWidget {
                         }
                         snapshotSharedPreferences.data!.setStringList(
                             UserData.listExtraits, [snapshotJsonStringData.data!]);
-                        snapshotSharedPreferences.data!.setStringList(UserData.validatedExtrait, ["ohzfh", "jzefjf", "ihzofh"]);
+                        snapshotSharedPreferences.data!.setStringList(UserData.validatedExtrait, []);
                         snapshotSharedPreferences.data!.setStringList(UserData.activatedExtrait, []);
                         return child;
                       }

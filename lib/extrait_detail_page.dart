@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:objectif_oral/data_reader.dart';
 import 'package:objectif_oral/preferences.dart';
@@ -17,6 +19,61 @@ class ExtraitDetailPage extends StatelessWidget {
             child: MediaQuery.of(context).size.width < 640
                 ? ModeSimple(id: id)
                 : ModeDouble(id: id)));
+  }
+}
+
+class BoutonValidationExtrait extends StatefulWidget {
+  final String id;
+  const BoutonValidationExtrait({super.key, required this.id});
+
+  @override
+  _BoutonValidationExtraitState createState() =>
+      _BoutonValidationExtraitState();
+}
+
+class _BoutonValidationExtraitState extends State<BoutonValidationExtrait> {
+  @override
+  Widget build(BuildContext context) {
+    return UserData.ifIsValidated(
+      context: context,
+      extraitID: widget.id,
+      isValidated: OutlinedButton.icon(
+        icon: const Icon(Icons.close_rounded),
+        label: const Text("Dé-valider l'extrait"),
+        style: ButtonStyle(
+          overlayColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.focused)) {
+              return Theme.of(context).colorScheme.primaryContainer;
+            }
+            return null; // Defer to the widget's default.
+          }),
+        ),
+        onPressed: () {
+          UserData.of(context).removeValidatedExtraits(widget.id);
+          setState(() {});
+          log("${widget.id} enlevé des extraits lus");
+        },
+      ),
+      isNotValidated: OutlinedButton.icon(
+        icon: const Icon(Icons.done_rounded),
+        label: const Text("Extrait terminé"),
+        style: ButtonStyle(
+          overlayColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.focused)) {
+              return Theme.of(context).colorScheme.primaryContainer;
+            }
+            return null; // Defer to the widget's default.
+          }),
+        ),
+        onPressed: () {
+          UserData.of(context).addValidatedExtraits(widget.id);
+          setState(() {});
+          log("${widget.id} ajouté aux extraits lus");
+        },
+      ),
+    );
   }
 }
 
@@ -49,19 +106,8 @@ class ModeSimple extends StatelessWidget {
                     context, UserData.of(context).id(id).analyse),
               ],
             )),
-        OutlinedButton.icon(
-          icon: const Icon(Icons.done_rounded),
-          label: const Text("Terminé"),
-          style: ButtonStyle(
-            overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                (Set<MaterialState> states) {
-              if (states.contains(MaterialState.focused)) {
-                return Colors.red;
-              }
-              return null; // Defer to the widget's default.
-            }),
-          ),
-          onPressed: () {},
+        BoutonValidationExtrait(
+          id: id,
         )
       ],
     );
@@ -151,6 +197,9 @@ class ModeDouble extends StatelessWidget {
                       ],
                     ))),
           ],
+        ),
+        BoutonValidationExtrait(
+          id: id,
         )
       ],
     );

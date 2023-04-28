@@ -1,5 +1,6 @@
 import 'dart:developer'; //TODO
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:objectif_oral/preferences.dart';
 import 'data_reader.dart';
@@ -35,11 +36,24 @@ class ExtraitGrid extends StatelessWidget {
   }
 }
 
-class AvancementCard extends StatelessWidget {
+class AvancementCard extends StatefulWidget {
   const AvancementCard({super.key});
 
   @override
+  _AvancementCardState createState() =>
+      _AvancementCardState();
+}
+
+
+class _AvancementCardState extends State<AvancementCard> {
+
+  void refresh() {
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
+    UserData.of(context).notifyMeIfValidatedChange(refresh);
     UserData.of(context).nbrValidatedExtraits().then((value) {
       log("nbr extrait validés : $value");
     });
@@ -49,7 +63,8 @@ class AvancementCard extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
               return Center(
-                child: Text("erreur lors de UserData.of(context).nbrValidatedExtraits() erreur : ${snapshot.error}"),
+                child: Text(
+                    "erreur lors de UserData.of(context).nbrValidatedExtraits() erreur : ${snapshot.error}"),
               );
             } else {
               if (snapshot.data == null) {
@@ -102,6 +117,7 @@ class _ExtraitCardState extends State<ExtraitCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  final GlobalKey _globalKey = GlobalKey();
   double _coinsRonds = 17.5;
 
   @override
@@ -188,19 +204,60 @@ class _ExtraitCardState extends State<ExtraitCard>
                             ),
                           ],
                         ),
-                        InkWell(
-                          splashColor:
-                              Theme.of(context).colorScheme.primaryContainer,
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => ExtraitDetailPage(
-                                  id: widget.id,
+                        GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ExtraitDetailPage(
+                                    id: widget.id,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
+                              );
+                            },
+                            onLongPressStart:
+                                (LongPressStartDetails details) async {
+                              final screenSize = MediaQuery.of(context).size;
+                              await showMenu(
+                                context: context,
+                                position: RelativeRect.fromLTRB(
+                                  details.globalPosition.dx,
+                                  details.globalPosition.dy,
+                                  screenSize.width - details.globalPosition.dx,
+                                  screenSize.height - details.globalPosition.dy,
+                                ),
+                                items: [
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      UserData.of(context).isValidated(widget.id).then((validated) {
+                                        if (validated) {
+                                          UserData.of(context)
+                                              .removeValidatedExtraits(widget.id);
+                                          log("${widget.id} enlevé des extraits lus");
+                                        } else {
+                                          UserData.of(context)
+                                              .addValidatedExtraits(widget.id);
+                                          log("${widget.id} ajouté aux extraits lus");
+                                        }
+                                      });
+                                    },
+                                    child: UserData.ifIsValidated(
+                                        context: context,
+                                        extraitID: widget.id,
+                                        isValidated:
+                                            const Text("Dé-valider l'extrait"),
+                                        isNotValidated:
+                                            const Text("Valider l'extrait")),
+                                  ),
+                                ],
+                                elevation: 8.0,
+                              );
+                            },
+                            child: InkWell(
+                              key: _globalKey,
+                              splashColor: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
+                            )),
                       ])));
             }));
   }
