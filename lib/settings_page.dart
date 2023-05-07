@@ -7,7 +7,7 @@ class ParametresPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Paramètres'),
+        title: const Text('Crédits'),
       ),
       body: ListView(
         restorationId: 'list_settings',

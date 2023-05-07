@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'choix_extraits_page.dart';
 import 'grammaire_page.dart';
-import 'oeuvre_page.dart';
 import 'location_page.dart';
 import 'settings_page.dart';
 import 'data_reader.dart';
@@ -166,29 +165,8 @@ class _HomePageState extends State<HomePage> {
           title: const Text('Bienvenue'),
           actions: <Widget>[
             IconButton(
-              icon: const Icon(Icons.update),
-              tooltip: "Changer d'année",
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute<void>(
-                  builder: (BuildContext context) {
-                    return Scaffold(
-                      appBar: AppBar(
-                        title: const Text('Next page'),
-                      ),
-                      body: const Center(
-                        child: Text(
-                          'This is the next page',
-                          style: TextStyle(fontSize: 24),
-                        ),
-                      ),
-                    );
-                  },
-                ));
-              },
-            ),
-            IconButton(
-                icon: const Icon(Icons.settings),
-                tooltip: 'Paramètres',
+                icon: const Icon(Icons.info_outline_rounded),
+                tooltip: 'crédits',
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -217,14 +195,6 @@ class _HomePageState extends State<HomePage> {
                         icon: Icon(Icons.text_format_rounded),
                         label: 'grammaire',
                       ),
-                      NavigationDestination(
-                        icon: Icon(Icons.menu_book_rounded),
-                        label: 'œuvre',
-                      ),
-                      NavigationDestination(
-                        icon: Icon(Icons.place_rounded),
-                        label: 'examen',
-                      )
                     ],
                   )
                 : null,
@@ -242,14 +212,6 @@ class _HomePageState extends State<HomePage> {
                     icon: Icon(Icons.text_format_rounded),
                     label: Text('grammaire'),
                   ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.menu_book_rounded),
-                    label: Text('œuvre'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.place_rounded),
-                    label: Text('examen'),
-                  ),
                 ],
                 selectedIndex: currentPageIndex,
                 onDestinationSelected: (index) {
@@ -261,8 +223,6 @@ class _HomePageState extends State<HomePage> {
             child: <Widget>[
               const ExtraitsChoixPage(),
               grammairePage(context),
-              oeuvrePage(context),
-              examenPage(context)
             ][currentPageIndex],
           ),
         ]));
