@@ -28,7 +28,7 @@ class Credits extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        """Programmation : Thomas Diot\nIdée : Clément Marrast\nDonnées : contributeurs du repository Github""",
+        "Programmation : Thomas Diot\nIdée et Données : Clément Marrast",
         style: Theme.of(context).textTheme.titleMedium,
       )
     );
