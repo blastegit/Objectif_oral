@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'choix_extraits_page.dart';
 import 'grammaire_page.dart';
-import 'location_page.dart';
 import 'settings_page.dart';
 import 'data_reader.dart';
 import 'preferences.dart';
