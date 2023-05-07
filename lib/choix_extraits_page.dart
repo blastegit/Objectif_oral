@@ -1,9 +1,7 @@
 import 'dart:developer'; //TODO
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:objectif_oral/preferences.dart';
-import 'data_reader.dart';
 import 'extrait_detail_page.dart';
 
 class ExtraitsChoixPage extends StatelessWidget {
@@ -36,72 +34,132 @@ class ExtraitGrid extends StatelessWidget {
   }
 }
 
-class AvancementCard extends StatefulWidget {
+class AvancementCard extends StatelessWidget {
   const AvancementCard({super.key});
 
   @override
-  _AvancementCardState createState() =>
-      _AvancementCardState();
+  Widget build(BuildContext context) {
+    return SizedBox(
+        width: 308, //ne pas oublier la largeur de l'espacement
+        height: 150,
+        child: Card(
+            clipBehavior: Clip.hardEdge,
+            child: Container(
+                padding: const EdgeInsets.all(40),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: const [
+                      PourcentageText(),
+                      BarreDeProgres(),
+                    ]))));
+  }
 }
 
+class BarreDeProgres extends StatefulWidget {
+  const BarreDeProgres({Key? key}) : super(key: key);
 
-class _AvancementCardState extends State<AvancementCard> {
+  @override
+  _BarreDeProgresState createState() => _BarreDeProgresState();
+}
 
-  void refresh() {
-    setState(() {});
+class _BarreDeProgresState extends State<BarreDeProgres>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  double progres = 0.0;
+  bool needInitialisation = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 2000),
+      vsync: this,
+    );
+
+    _animation = Tween<double>(
+      begin: progres,
+      end: progres,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOutQuad,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _refresh(UserData userData) {
+    double nouvProgres =
+        (userData.nbrValidatedExtraits()) / (userData.nbrExtrait());
+    _controller.reset();
+    setState(() {
+      progres = nouvProgres;
+      _animation = Tween<double>(
+        begin: progres,
+        end: nouvProgres,
+      ).animate(CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOutQuad,
+      ));
+    });
+    _controller.forward();
   }
 
   @override
   Widget build(BuildContext context) {
-    UserData.of(context).notifyMeIfValidatedChange(refresh);
-    UserData.of(context).nbrValidatedExtraits().then((value) {
-      log("nbr extrait validés : $value");
+    if (needInitialisation) {
+      setState(() {
+        needInitialisation = false;
+        progres = UserData.of(context).nbrValidatedExtraits() /
+            UserData.of(context).nbrExtrait();
+      });
+    }
+    UserData.of(context).notifyMeIfValidatedChange(_refresh);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: LinearProgressIndicator(
+        minHeight: 8,
+        value: _animation.value,
+      ),
+    );
+  }
+}
+
+class PourcentageText extends StatefulWidget {
+  const PourcentageText({Key? key}) : super(key: key);
+
+  @override
+  _PourcentageTextState createState() => _PourcentageTextState();
+}
+
+class _PourcentageTextState extends State<PourcentageText> {
+  double progres = 0.0;
+  bool needInitialisation = true;
+
+  void _refresh(UserData userData) {
+    setState(() {
+      progres = UserData.of(context).nbrValidatedExtraits() /
+          UserData.of(context).nbrExtrait();
     });
-    return FutureBuilder<int>(
-        future: UserData.of(context).nbrValidatedExtraits(),
-        builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text(
-                    "erreur lors de UserData.of(context).nbrValidatedExtraits() erreur : ${snapshot.error}"),
-              );
-            } else {
-              if (snapshot.data == null) {
-                throw "UserData.of(context).nbrValidatedExtraits() return null";
-              } else {
-                double pourcentage =
-                    snapshot.data! / UserData.of(context).nbrExtrait();
-                return SizedBox(
-                    width: 308, //ne pas oublier la largeur de l'espacement
-                    height: 150,
-                    child: Card(
-                        clipBehavior: Clip.hardEdge,
-                        child: Container(
-                            padding: const EdgeInsets.all(40),
-                            child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text('${pourcentage * 100} %',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge),
-                                  ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: LinearProgressIndicator(
-                                        minHeight: 8,
-                                        value: pourcentage,
-                                      )),
-                                ]))));
-              }
-            }
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (needInitialisation) {
+      setState(() {
+        needInitialisation = false;
+        progres = UserData.of(context).nbrValidatedExtraits() /
+            UserData.of(context).nbrExtrait();
+      });
+    }
+    UserData.of(context).notifyMeIfValidatedChange(_refresh);
+    return Text('${progres * 100} %',
+        style: Theme.of(context).textTheme.titleLarge);
   }
 }
 
@@ -119,6 +177,7 @@ class _ExtraitCardState extends State<ExtraitCard>
   late Animation<double> _animation;
   final GlobalKey _globalKey = GlobalKey();
   double _coinsRonds = 17.5;
+  double _elevation = 1.0;
 
   @override
   void initState() {
@@ -162,7 +221,9 @@ class _ExtraitCardState extends State<ExtraitCard>
   Widget build(BuildContext context) {
     return MouseRegion(
         onEnter: (_) {
+          if (!UserData.of(context).isValidated(widget.id)) {
           _changerCoinsRonds(30.0);
+          }
         },
         onExit: (_) {
           _changerCoinsRonds(17.5);
@@ -174,7 +235,7 @@ class _ExtraitCardState extends State<ExtraitCard>
                   width: 150,
                   height: 150,
                   child: Card(
-                      elevation: 1,
+                      elevation: _elevation,
                       clipBehavior: Clip.hardEdge,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(17.5),
@@ -204,6 +265,24 @@ class _ExtraitCardState extends State<ExtraitCard>
                             ),
                           ],
                         ),
+                        UserData.of(context).isValidated(widget.id) == true
+                            ? Stack(
+                          children: [
+                            Container(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .secondaryContainer
+                                  .withAlpha(220),
+                            ),
+                            Center(
+                                child: Icon(
+                                  Icons.done_rounded,
+                                  size: 80,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                )),
+                          ],
+                        )
+                            : Container(),
                         GestureDetector(
                             onTap: () {
                               Navigator.of(context).push(
@@ -227,27 +306,26 @@ class _ExtraitCardState extends State<ExtraitCard>
                                 ),
                                 items: [
                                   PopupMenuItem(
-                                    onTap: () {
-                                      UserData.of(context).isValidated(widget.id).then((validated) {
-                                        if (validated) {
+                                      onTap: () {
+                                        if (UserData.of(context)
+                                            .isValidated(widget.id)) {
                                           UserData.of(context)
-                                              .removeValidatedExtraits(widget.id);
+                                              .removeValidatedExtraits(
+                                                  widget.id);
                                           log("${widget.id} enlevé des extraits lus");
+                                          setState(() {});
                                         } else {
                                           UserData.of(context)
                                               .addValidatedExtraits(widget.id);
                                           log("${widget.id} ajouté aux extraits lus");
+                                          setState(() {});
                                         }
-                                      });
-                                    },
-                                    child: UserData.ifIsValidated(
-                                        context: context,
-                                        extraitID: widget.id,
-                                        isValidated:
-                                            const Text("Dé-valider l'extrait"),
-                                        isNotValidated:
-                                            const Text("Valider l'extrait")),
-                                  ),
+                                      },
+                                      child: UserData.of(context)
+                                                  .isValidated(widget.id) ==
+                                              true
+                                          ? const Text("Dé-valider l'extrait")
+                                          : const Text("Valider l'extrait")),
                                 ],
                                 elevation: 8.0,
                               );

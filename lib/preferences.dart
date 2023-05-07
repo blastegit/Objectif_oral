@@ -59,7 +59,10 @@ class UserData extends InheritedWidget {
   static const listExtraits = "listExtraits";
 
   final Map<String, ExtraitData> _cacheExtraits = {};
+  final List<String> _cacheValidatedExtraits = ["/vide"];//TODO moche
   final List<Function> _validatedLinkedWidgetCallbacks = [];
+
+  final __2f = [];
 
   static UserData? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<UserData>();
@@ -74,7 +77,12 @@ class UserData extends InheritedWidget {
   @override
   bool updateShouldNotify(UserData oldWidget) => true; //TODO
 
-  ////validated Extraits
+  Future<void> loadEverything() async {
+    await loadExtraitsModifier();
+    await loadValidatedExtraitsModifier();
+  }
+
+  ////////////////VALIDATED EXTRAITS///////////////////////////////////////////
   Future<List<String>> getValidatedExtrais() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getStringList(validatedExtrait)!;
@@ -83,57 +91,39 @@ class UserData extends InheritedWidget {
   void setValidatedExtraits(List<String> newValidatedExtracts) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setStringList(validatedExtrait, newValidatedExtracts);
+    if (_cacheValidatedExtraits != newValidatedExtracts) {
+      log('CHANGEMENT : _cacheValidatedExtraits $_cacheValidatedExtraits devient newValidatedExtracts $newValidatedExtracts');
+      _cacheValidatedExtraits.clear();
+      _cacheValidatedExtraits.addAll(newValidatedExtracts);
+    }
     callCallbackToAllValidatedLinkedWidget();
   }
 
-  void addValidatedExtraits(String addString) async {
-    List<String> actualValidatedExtracts = await getValidatedExtrais();
-    actualValidatedExtracts.add(addString);
-    setValidatedExtraits(actualValidatedExtracts);
+  void _checkCacheValidatedExtraitsIsInit() {
+    assert(!_cacheValidatedExtraits.contains("/vide"),
+    "You must load the validated extraits before calling this function : $_cacheValidatedExtraits");
   }
 
-  void removeValidatedExtraits(String removeString) async {
-    List<String> actualValidatedExtracts = await getValidatedExtrais();
-    actualValidatedExtracts.remove(removeString);
-    setValidatedExtraits(actualValidatedExtracts);
+  void addValidatedExtraits(String addString) {
+    _checkCacheValidatedExtraitsIsInit();
+    _cacheValidatedExtraits.add(addString);
+    setValidatedExtraits(_cacheValidatedExtraits);
   }
 
-  Future<int> nbrValidatedExtraits() async {
-    log("ESSAI R2CUPERATION EXTRAITS VALID2S");
-    List<String> actualValidatedExtracts = await getValidatedExtrais();
-    log("EXTRAITS VALID2S R2CUP2R2S");
-    return actualValidatedExtracts.length;
+  void removeValidatedExtraits(String removeString) {
+    _checkCacheValidatedExtraitsIsInit();
+    _cacheValidatedExtraits.remove(removeString);
+    setValidatedExtraits(_cacheValidatedExtraits);
   }
 
-  Future<bool> isValidated(String extraitID) async {
-    List<String> actualValidatedExtracts = await getValidatedExtrais();
-    return actualValidatedExtracts.contains(extraitID);
+  int nbrValidatedExtraits() {
+    _checkCacheValidatedExtraitsIsInit();
+    return _cacheValidatedExtraits.length;
   }
 
-  static Widget ifIsValidated(
-      {required BuildContext context,
-      required String extraitID,
-      required Widget isValidated,
-      required Widget isNotValidated}) {
-    return FutureBuilder<bool>(
-        future: UserData.of(context).isValidated(extraitID),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError | (snapshot.data == null)) {
-              throw "La récupération de si l'extrait '$extraitID' a été validé a mené soit à une erreur soit à un résultat null : ${snapshot.error}";
-            } else {
-              if (snapshot.data! == true) {
-                return isValidated;
-              } else {
-                return isNotValidated;
-              }
-            }
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        });
+  bool isValidated(String extraitID) {
+    _checkCacheValidatedExtraitsIsInit();
+    return _cacheValidatedExtraits.contains(extraitID);
   }
 
   void notifyMeIfValidatedChange(Function callback) {
@@ -141,13 +131,19 @@ class UserData extends InheritedWidget {
   }
 
   void callCallbackToAllValidatedLinkedWidget() {
-    for (Function callback in _validatedLinkedWidgetCallbacks) {
+    for (Function callback in [..._validatedLinkedWidgetCallbacks]) {
       _validatedLinkedWidgetCallbacks.remove(callback);
-      callback();
+      callback(this);
     }
   }
 
-  ////activated Extraits
+  Future<void> loadValidatedExtraitsModifier() async {
+    _cacheValidatedExtraits.clear();
+    _cacheValidatedExtraits.addAll(await getValidatedExtrais());
+    log("EXTRAITS LOAD2 : $_cacheValidatedExtraits");
+  }
+
+  ////////////////ACTIVATED EXTRAITS///////////////////////////////////////////
   Future<List<String>> getActivatedExtrais() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getStringList(activatedExtrait)!;
@@ -170,7 +166,7 @@ class UserData extends InheritedWidget {
     setActivatedExtraits(actualValidatedExtracts);
   }
 
-  ////listExtraits
+  /////////////////////LIST EXTRAITS///////////////////////////////////////////
   Future<List<String>> getListStringExtraits() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getStringList(listExtraits)!;
@@ -211,10 +207,6 @@ class UserData extends InheritedWidget {
 
   int nbrExtrait() {
     return getAllExtraitId().length;
-  }
-
-  Future<void> loadEverything() async {
-    await loadExtraitsModifier();
   }
 
   Future<void> loadExtraitsModifier() async {

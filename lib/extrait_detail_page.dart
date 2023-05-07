@@ -34,46 +34,43 @@ class BoutonValidationExtrait extends StatefulWidget {
 class _BoutonValidationExtraitState extends State<BoutonValidationExtrait> {
   @override
   Widget build(BuildContext context) {
-    return UserData.ifIsValidated(
-      context: context,
-      extraitID: widget.id,
-      isValidated: OutlinedButton.icon(
-        icon: const Icon(Icons.close_rounded),
-        label: const Text("Dé-valider l'extrait"),
-        style: ButtonStyle(
-          overlayColor: MaterialStateProperty.resolveWith<Color?>(
-              (Set<MaterialState> states) {
-            if (states.contains(MaterialState.focused)) {
-              return Theme.of(context).colorScheme.primaryContainer;
-            }
-            return null; // Defer to the widget's default.
-          }),
-        ),
-        onPressed: () {
-          UserData.of(context).removeValidatedExtraits(widget.id);
-          setState(() {});
-          log("${widget.id} enlevé des extraits lus");
-        },
-      ),
-      isNotValidated: OutlinedButton.icon(
-        icon: const Icon(Icons.done_rounded),
-        label: const Text("Extrait terminé"),
-        style: ButtonStyle(
-          overlayColor: MaterialStateProperty.resolveWith<Color?>(
-              (Set<MaterialState> states) {
-            if (states.contains(MaterialState.focused)) {
-              return Theme.of(context).colorScheme.primaryContainer;
-            }
-            return null; // Defer to the widget's default.
-          }),
-        ),
-        onPressed: () {
-          UserData.of(context).addValidatedExtraits(widget.id);
-          setState(() {});
-          log("${widget.id} ajouté aux extraits lus");
-        },
-      ),
-    );
+    return UserData.of(context).isValidated(widget.id) == true
+        ? OutlinedButton.icon(
+            icon: const Icon(Icons.close_rounded),
+            label: const Text("Dé-valider l'extrait"),
+            style: ButtonStyle(
+              overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                  (Set<MaterialState> states) {
+                if (states.contains(MaterialState.focused)) {
+                  return Theme.of(context).colorScheme.primaryContainer;
+                }
+                return null; // Defer to the widget's default.
+              }),
+            ),
+            onPressed: () {
+              UserData.of(context).removeValidatedExtraits(widget.id);
+              setState(() {});
+              log("${widget.id} enlevé des extraits lus");
+            },
+          )
+        : OutlinedButton.icon(
+            icon: const Icon(Icons.done_rounded),
+            label: const Text("Extrait terminé"),
+            style: ButtonStyle(
+              overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                  (Set<MaterialState> states) {
+                if (states.contains(MaterialState.focused)) {
+                  return Theme.of(context).colorScheme.primaryContainer;
+                }
+                return null; // Defer to the widget's default.
+              }),
+            ),
+            onPressed: () {
+              UserData.of(context).addValidatedExtraits(widget.id);
+              setState(() {});
+              log("${widget.id} ajouté aux extraits lus");
+            },
+          );
   }
 }
 
@@ -108,7 +105,8 @@ class ModeSimple extends StatelessWidget {
             )),
         BoutonValidationExtrait(
           id: id,
-        )
+        ),
+        const SizedBox(height: 10),
       ],
     );
   }
@@ -200,7 +198,8 @@ class ModeDouble extends StatelessWidget {
         ),
         BoutonValidationExtrait(
           id: id,
-        )
+        ),
+        const SizedBox(height: 10),
       ],
     );
   }

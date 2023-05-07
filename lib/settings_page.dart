@@ -12,8 +12,8 @@ class ParametresPage extends StatelessWidget {
       body: ListView(
         restorationId: 'list_settings',
         padding: const EdgeInsets.symmetric(vertical: 8),
-        children: [
-          const Credits(),
+        children: const [
+          Credits(),
         ],
       )
     );
